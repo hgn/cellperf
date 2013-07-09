@@ -183,7 +183,7 @@ public class CellPerfActivity extends Activity {
                 break;
 
             case 4:
-                fragment = new SetupFragment();
+                fragment = new SettingsFragment();
                 break;
 
 
