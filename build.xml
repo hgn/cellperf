@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CellPerf" default="help">
+
+    <property file="local.properties" />
+    <property file="ant.properties" />
+
+    <property environment="env" />
+    <condition property="sdk.dir" value="${env.ANDROID_HOME}">
+        <isset property="env.ANDROID_HOME" />
+    </condition>
+
+    <loadproperties srcFile="project.properties" />
+
+    <fail
+            message="sdk.dir is missing. Make sure to generate local.properties using 'android update project' or to inject it through the ANDROID_HOME environment variable."
+            unless="sdk.dir"
+    />
+
+    <import file="custom_rules.xml" optional="true" />
+		<import file="${sdk.dir}/tools/ant/build.xml" />
+
+		<property name="android.tools.dir" location="${sdk.dir}/tools" />
+		<property name="lint" location="${android.tools.dir}/lint${bat}" />
+
+		<property name="verbose" value="false" />
+
+		<property name="lint.out.html" value="bin/lint.html" />
+		<property name="lint.out.xml" value="bin/lint.xml" />
+
+		<target name="lint" description="Runs lint on the project to look for potential bugs" >
+			<lint executable="${lint}" html="${lint.out.html}" xml="${lint.out.xml}" src="${source.absolute.dir}:${gen.absolute.dir}" classpath="${out.classes.absolute.dir}" />
+		</target>
+
+
+
+</project>
