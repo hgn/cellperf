@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:useDefaultMargins="true"
+        android:alignmentMode="alignBounds"
+        android:columnOrderPreserved="false"
+
+        android:columnCount="7"
+				>
+
+    <TextView
+            android:text="Phone Type:"
+            android:layout_column="0"
+            android:layout_gravity="left"
+						/>
+
+    <TextView
+            android:text="GSM"
+            android:layout_gravity="left"
+						/>
+
+
+
+    <TextView
+            android:text="Cell:"
+            android:layout_column="0"
+            android:layout_gravity="left"
+						/>
+
+    <TextView
+            android:text="Ifff"
+            android:layout_gravity="left"
+						/>
+
+
+    <TextView
+            android:text="Operator:"
+            android:layout_column="0"
+            android:layout_gravity="left"
+						/>
+
+    <TextView
+            android:text="Vodafone.de"
+            android:layout_gravity="left"
+						/>
+
+
+    <TextView
+            android:text="Net Type:"
+            android:layout_column="0"
+            android:layout_gravity="left"
+						/>
+
+    <TextView
+            android:text="HSDPA"
+            android:layout_gravity="left"
+						/>
+
+
+    <TextView
+            android:text="Neighboors:"
+            android:layout_column="0"
+            android:layout_gravity="left"
+						/>
+
+    <TextView
+            android:text="43934, 3499349, 439943"
+            android:layout_gravity="left"
+						/>
+
+
+    <TextView
+            android:text="MCC MNC:"
+            android:layout_column="0"
+            android:layout_gravity="left"
+						/>
+
+    <TextView
+            android:text="8249248"
+            android:layout_gravity="left"
+						/>
+
+
+    <TextView
+            android:text="Country:"
+            android:layout_column="0"
+            android:layout_gravity="left"
+						/>
+
+    <TextView
+            android:text="de"
+            android:layout_gravity="left"
+            />
+
+</GridLayout>
