@@ -15,6 +15,7 @@ public class Pinger {
 
         int count = 0;
         String str = "";
+
         try {
             int i;
             char[] buffer = new char[4096];
