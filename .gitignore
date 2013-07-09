@@ -1,5 +1,8 @@
 ant.properties
 
+# proguard features are not required
+proguard-project.txt
+
 # built application files
 *.apk
 *.ap_
