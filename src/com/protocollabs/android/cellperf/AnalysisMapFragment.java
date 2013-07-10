@@ -24,29 +24,60 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-/**
- * Fragment that appears in the "content_frame", shows a planet
- */
-public class AnalysisMapFragment extends Fragment {
-    public static final String ARG_PLANET_NUMBER = "planet_number";
+import com.google.android.maps.MapView;
 
-    public AnalysisMapFragment() {
-        // Empty constructor required for fragment subclasses
+
+
+
+public class AnalysisMapFragment extends Fragment {
+
+    private MapView mMapView;
+    private GoogleMap googleMap;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
+            Bundle savedInstanceState) {
+        // inflat and return the layout
+        View v = inflater.inflate(R.layout.map_fragment, container, false);
+        mMapView = (MapView) v.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+        mMapView.onResume();//needed to get the map to display immediately
+
+        try {
+            MapsInitializer.initialize(this);
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+
+        googleMap = mMapView.getMap();
+        getActivity().setTitle("Analysis Map");
+
+        //Perform any camera updates here
+
+        return v;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_analysis_map, container, false);
-        int i = getArguments().getInt(ARG_PLANET_NUMBER);
-        String planet = getResources().getStringArray(R.array.planets_array)[i];
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
 
-        int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
-                "drawable", getActivity().getPackageName());
-        ((ImageView) rootView.findViewById(R.id.image)).setImageResource(imageId);
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMapView.onPause();
+    }
 
-        getActivity().setTitle("Analysis Map");
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+    }
 
-        return rootView;
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
     }
 }

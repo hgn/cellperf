@@ -272,6 +272,4 @@ public class CellPerfActivity extends Activity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-
-
 }
