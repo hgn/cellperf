@@ -1,12 +1,11 @@
 <resources>
 	<string name="app_name">Cellperf</string>
 
-	<string-array name="planets_array">
+	<string-array name="app_subcomponents">
 		<item>Cell Information</item>
 		<item>Measurment</item>
 		<item>Analysis Map</item>
 		<item>Backlog</item>
-		<item>Setup</item>
 	</string-array>
 
 	<string name="drawer_open">Open navigation drawer</string>
@@ -14,6 +13,7 @@
 	<string name="action_websearch">Web search</string>
 	<string name="action_homepage">ProtocolLabs.com</string>
 	<string name="app_not_available">Sorry, there\'s no web browser available</string>
+	<string name="programmed_error_warning">Programmed error - urgl</string>
 
 	<string name="action_bar_settings">Settings</string>
 </resources>

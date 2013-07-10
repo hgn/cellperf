@@ -5,6 +5,7 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -24,33 +25,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-/**
- * This example illustrates a common usage of the DrawerLayout widget
- * in the Android support library.
- * <p/>
- * <p>When a navigation (left) drawer is present, the host activity should detect presses of
- * the action bar's Up affordance as a signal to open and close the navigation drawer. The
- * ActionBarDrawerToggle facilitates this behavior.
- * Items within the drawer should fall into one of two categories:</p>
- * <p/>
- * <ul>
- * <li><strong>View switches</strong>. A view switch follows the same basic policies as
- * list or tab navigation in that a view switch does not create navigation history.
- * This pattern should only be used at the root activity of a task, leaving some form
- * of Up navigation active for activities further down the navigation hierarchy.</li>
- * <li><strong>Selective Up</strong>. The drawer allows the user to choose an alternate
- * parent for Up navigation. This allows a user to jump across an app's navigation
- * hierarchy at will. The application should treat this as it treats Up navigation from
- * a different task, replacing the current task stack using TaskStackBuilder or similar.
- * This is the only form of navigation drawer that should be used outside of the root
- * activity of a task.</li>
- * </ul>
- * <p/>
- * <p>Right side drawers should be used for actions, not navigation. This follows the pattern
- * established by the Action Bar that navigation should be to the left and actions to the right.
- * An action should be an operation performed on the current contents of the window,
- * for example enabling or disabling a data overlay on top of the current content.</p>
- */
+
+
 public class CellPerfActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -66,7 +42,7 @@ public class CellPerfActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mTitle = mDrawerTitle = getTitle();
-        mCategories = getResources().getStringArray(R.array.planets_array);
+        mCategories = getResources().getStringArray(R.array.app_subcomponents);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -123,11 +99,14 @@ public class CellPerfActivity extends Activity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        FragmentManager fm;
         Bundle args = new Bundle();
         Fragment fragment;
+        FragmentTransaction ft;
 
          // The action bar home/up action should open or close the drawer.
          // ActionBarDrawerToggle will take care of this.
@@ -135,7 +114,9 @@ public class CellPerfActivity extends Activity {
             return true;
         }
 
-        // Handle action buttons
+        fm = getFragmentManager();
+
+
         switch(item.getItemId()) {
             case R.id.action_websearch:
                 // create intent to perform web search for this planet
@@ -152,16 +133,26 @@ public class CellPerfActivity extends Activity {
                 Toast.makeText(this, "homepage", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_settings:
-                fragment = new SettingsFragment();
-                fragment.setArguments(args);
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                fragment = fm.findFragmentByTag("SettingsFragment");
+                if (fragment == null) {
+                    fragment = new SettingsFragment();
+                    fragment.setArguments(args);
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment, "SettingsFragment");
+                    ft.commit();
+                } else {
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.commit();
+                }
+
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -174,39 +165,80 @@ public class CellPerfActivity extends Activity {
     private void selectItem(int position) {
 
         Fragment fragment;
-        Bundle args = new Bundle();
+        FragmentManager fm;
+        FragmentTransaction ft;
+        Bundle args;
+        
+        args = new Bundle();
+        fm = getFragmentManager();
 
         switch (position) {
 
             case 0:
-                fragment = new CellInformationFragment();
+                fragment = fm.findFragmentByTag("CellInformationFragment");
+                if (fragment == null) {
+                    fragment = new CellInformationFragment();
+                    fragment.setArguments(args);
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment, "CellInformationFragment");
+                    ft.commit();
+                } else {
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.commit();
+                }
                 break;
 
             case 1:
-                fragment = new MeasurementFragment();
+                fragment = fm.findFragmentByTag("MeasurementFragment");
+                if (fragment == null) {
+                    fragment = new MeasurementFragment();
+                    fragment.setArguments(args);
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment, "MeasurementFragment");
+                    ft.commit();
+                } else {
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.commit();
+                }
                 break;
 
             case 2:
-                fragment = new AnalysisMapFragment();
+                fragment = fm.findFragmentByTag("AnalysisMapFragment");
+                if (fragment == null) {
+                    fragment = new AnalysisMapFragment();
+                    fragment.setArguments(args);
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment, "AnalysisMapFragment");
+                    ft.commit();
+                } else {
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.commit();
+                }
                 break;
 
             case 3:
-                fragment = new BacklogFragment();
+                fragment = fm.findFragmentByTag("BacklogFragment");
+                if (fragment == null) {
+                    fragment = new BacklogFragment();
+                    fragment.setArguments(args);
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment, "BacklogFragment");
+                    ft.commit();
+                } else {
+                    ft = fm.beginTransaction();
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.commit();
+                }
                 break;
-
-            case 4:
-                fragment = new SettingsFragment();
-                break;
-
 
             default:
-                fragment = new PlanetFragment();
+                Toast.makeText(this, R.string.programmed_error_warning, Toast.LENGTH_LONG).show();
                 break;
         }
 
-        fragment.setArguments(args);
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
@@ -256,7 +288,7 @@ public class CellPerfActivity extends Activity {
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_planet, container, false);
             int i = getArguments().getInt(ARG_PLANET_NUMBER);
-            String planet = getResources().getStringArray(R.array.planets_array)[i];
+            String planet = getResources().getStringArray(R.array.app_subcomponents)[i];
 
             int imageId = getResources().getIdentifier(planet.toLowerCase(Locale.getDefault()),
                             "drawable", getActivity().getPackageName());
