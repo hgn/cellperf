@@ -23,61 +23,79 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.google.android.maps.MapView;
-
-
-
+import android.util.Log;
 
 public class AnalysisMapFragment extends Fragment {
 
-    private MapView mMapView;
-    private GoogleMap googleMap;
+    private final String TAG = getClass().getSimpleName();
+
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
-            Bundle savedInstanceState) {
-        // inflat and return the layout
-        View v = inflater.inflate(R.layout.map_fragment, container, false);
-        mMapView = (MapView) v.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.onResume();//needed to get the map to display immediately
-
-        try {
-            MapsInitializer.initialize(this);
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
-
-        googleMap = mMapView.getMap();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
+        View rootView = inflater.inflate(R.layout.fragment_analysis_map, container, false);
         getActivity().setTitle("Analysis Map");
 
-        //Perform any camera updates here
-
-        return v;
+        return rootView;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        mMapView.onResume();
-    }
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		// Notification that 
+		Log.i(TAG, "onCreate");
+	}
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mMapView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mMapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mMapView.onLowMemory();
-    }
+	public void onStart() {
+		super.onStart();	
+		Log.i(TAG, "onStart");
+	}
+	
+	public void onresume() {
+		super.onResume();
+		Log.i(TAG, "onResume");
+	}
+	
+	public void onPause() {
+		super.onPause();
+		Log.i(TAG, "onPause");
+	}
+	
+	public void onStop() {
+		super.onStop();
+		Log.i(TAG, "onStop");
+	}
+	
+	public void onDestroyView() {
+		super.onDestroyView();
+		Log.i(TAG, "onDestroyView");
+	}
+	
+	public void onDestroy() {
+		super.onDestroy();
+		Log.i(TAG, "onDestroy");
+	}
+	
+	public void onDetach() {
+		super.onDetach();
+		Log.i(TAG, "onDetach");
+	}
+	
+	public void onActivityCreated() {
+		// Notification that the containing activiy and its View hierarchy exist
+		Log.i(TAG, "onActivityCreated");
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfiguration) {
+		super.onConfigurationChanged(newConfiguration);
+		
+		Log.i(TAG, "onConfigurationChanged");
+	}
+	
+	@Override
+	public void onLowMemory() {
+		// No guarantee this is called before or after other callbacks
+		Log.i(TAG, "onLowMemory");
+	}
 }
