@@ -37,6 +37,13 @@ public class Uploader {
     private static final String url = "http://foo.appspot.com";
 
 
+    private String currentDate() {
+        SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+        sdf.setTimeZone(TimeZone.getDefault());
+        return sdf.format(new Date());
+    }
+
+
     public static void ping(String url) {
 
         URI website;
