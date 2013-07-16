@@ -32,7 +32,7 @@ import java.io.InputStreamReader;
 import android.os.Bundle;
 
 
-public class Uploader {
+public class CloudEngineCommunicator {
 
     private static final String url = "http://foo.appspot.com";
 
