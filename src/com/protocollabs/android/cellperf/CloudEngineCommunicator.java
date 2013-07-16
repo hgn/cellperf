@@ -10,6 +10,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.client.HttpResponseException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,7 +47,32 @@ public class CloudEngineCommunicator {
     }
 
 
-    public static void ping(String url) {
+    private void handleResponse(HttpResponse response) {
+        BasicResponseHandler responseHandler = new BasicResponseHandler();
+        String strResponse = null;
+        if (response != null) {
+            try {
+                strResponse = responseHandler.handleResponse(response);
+            } catch (HttpResponseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            String out = EntityUtils.toString(response.getEntity());
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+    }
+
+
+    public void ping(String url) {
 
         URI website;
 
@@ -89,12 +117,7 @@ public class CloudEngineCommunicator {
             return;
         }
 
-        try {
-            String out = EntityUtils.toString(response.getEntity());
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        handleResponse(response);
 
         return;
     }
