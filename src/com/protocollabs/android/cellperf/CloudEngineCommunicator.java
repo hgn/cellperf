@@ -38,6 +38,15 @@ import android.os.Bundle;
 public class CloudEngineCommunicator {
 
     private static final String url = "http://foo.appspot.com";
+    private ArrayList<MeasurementItem> measurementItems;
+
+
+    public CloudEngineCommunicator(MeasurementItem... items) {
+        measurementItems = new ArrayList<MeasurementItem>();
+        for (MeasurementItem r : items) {
+            measurementItems.add(r);
+        }
+    }
 
 
     private String currentDate() {
@@ -54,10 +63,8 @@ public class CloudEngineCommunicator {
             try {
                 strResponse = responseHandler.handleResponse(response);
             } catch (HttpResponseException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -72,7 +79,7 @@ public class CloudEngineCommunicator {
     }
 
 
-    public void ping(String url) {
+    public void execute() {
 
         URI website;
 
@@ -87,14 +94,12 @@ public class CloudEngineCommunicator {
         HttpPost request = new HttpPost(website);
 
         request.setHeader("Content-Type", "application/json");
-        request.setHeader("Accept", "application/json");
-
-        String currentDateTimeString = new SimpleDateFormat("HH:mm:ss").format(new Date());
+        request.setHeader("Accept",       "application/json");
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put("reg_id","Registration ID sent to the server"); 
-            obj.put("datetime",currentDateTimeString);
+            obj.put("reg_id",   "Registration ID sent to the server"); 
+            obj.put("datetime", currentDate());
         } catch (JSONException e) {
             e.printStackTrace();
             return;
