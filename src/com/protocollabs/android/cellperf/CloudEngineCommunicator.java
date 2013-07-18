@@ -37,7 +37,7 @@ import android.os.Bundle;
 
 public class CloudEngineCommunicator {
 
-    private static final String url = "http://foo.appspot.com";
+    private static final String url = "http://foo.appspot.com/";
     private ArrayList<MeasurementItem> measurementItems;
 
 
@@ -121,6 +121,13 @@ public class CloudEngineCommunicator {
             e.printStackTrace();
             return;
         }
+
+        final int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode != HttpStatus.SC_OK) {
+            Log.w(getClass().getSimpleName(), "Error " + statusCode + " for URL " + url);
+            return;
+        }
+
 
         handleResponse(response);
 
