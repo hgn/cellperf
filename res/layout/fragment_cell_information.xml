@@ -94,6 +94,18 @@
     <TextView
             android:text="de"
             android:layout_gravity="left"
+						/>
+
+    <TextView
+            android:text="RSSI:"
+            android:layout_column="0"
+            android:layout_gravity="left"
+						/>
+
+					<TextView
+						android:id="@+id/rssi"
+            android:text="99"
+            android:layout_gravity="left"
             />
 
 </GridLayout>

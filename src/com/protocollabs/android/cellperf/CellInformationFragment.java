@@ -24,28 +24,51 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.util.Log;
+import android.widget.TextView;
 
-/**
- * Fragment that appears in the "content_frame", shows a planet
- */
 public class CellInformationFragment extends Fragment {
 
     private final String TAG = getClass().getSimpleName();
+    private CellInformation cellInformation = null;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         Log.i(TAG, "onCreateView");
+
         View rootView = inflater.inflate(R.layout.fragment_cell_information, container, false);
         getActivity().setTitle("Cell Information");
 
+        if (savedInstanceState != null) {
+            cellInformation = (CellInformation) savedInstanceState.getParcelable("cellInformation");
+            if (cellInformation != null) {
+                cellInformation = new CellInformation(this.getActivity());
+            }
+        } else {
+            cellInformation = new CellInformation(this.getActivity());
+        }
+
+        cellInformation.initNetwork();
+        int rssi = cellInformation.getCurrentRssi();
+
+        TextView tv1 = (TextView) getActivity().findViewById(R.id.rssi);
+        tv1.setText(String.valueOf(rssi));
+
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        Log.v(TAG, "onSaveInstanceState");
+        state.putParcelable("cellInformation", cellInformation);
     }
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		// Notification that 
 		Log.i(TAG, "onCreate");
 	}
 
@@ -85,20 +108,17 @@ public class CellInformationFragment extends Fragment {
 	}
 	
 	public void onActivityCreated() {
-		// Notification that the containing activiy and its View hierarchy exist
 		Log.i(TAG, "onActivityCreated");
 	}
 	
 	@Override
 	public void onConfigurationChanged(Configuration newConfiguration) {
 		super.onConfigurationChanged(newConfiguration);
-		
 		Log.i(TAG, "onConfigurationChanged");
 	}
 	
 	@Override
 	public void onLowMemory() {
-		// No guarantee this is called before or after other callbacks
 		Log.i(TAG, "onLowMemory");
 	}
 }

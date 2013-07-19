@@ -13,6 +13,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.HttpStatus;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,17 +34,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import android.os.Bundle;
+import android.util.Log;
 
 
 public class CloudEngineCommunicator {
 
+    private final String TAG = getClass().getSimpleName();
     private static final String url = "http://foo.appspot.com/";
-    private ArrayList<MeasurementItem> measurementItems;
+    private ArrayList<CellInformation> measurementItems;
 
 
-    public CloudEngineCommunicator(MeasurementItem... items) {
-        measurementItems = new ArrayList<MeasurementItem>();
-        for (MeasurementItem r : items) {
+    public CloudEngineCommunicator(CellInformation... items) {
+        measurementItems = new ArrayList<CellInformation>();
+        for (CellInformation r : items) {
             measurementItems.add(r);
         }
     }
@@ -124,7 +127,7 @@ public class CloudEngineCommunicator {
 
         final int statusCode = response.getStatusLine().getStatusCode();
         if (statusCode != HttpStatus.SC_OK) {
-            Log.w(getClass().getSimpleName(), "Error " + statusCode + " for URL " + url);
+            Log.i(TAG,  "Error " + statusCode + " for URL " + url);
             return;
         }
 
