@@ -26,17 +26,12 @@ import android.widget.Toast;
 
 
 public class MeasurementFragment extends Fragment {
-    public static final String ARG_PLANET_NUMBER = "planet_number";
 
-    public MeasurementFragment() {
-        // Empty constructor required for fragment subclasses
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_measurement, container, false);
-        int i = getArguments().getInt(ARG_PLANET_NUMBER);
 
         getActivity().setTitle("Measurement");
 

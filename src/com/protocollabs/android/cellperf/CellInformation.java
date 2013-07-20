@@ -22,6 +22,7 @@ import android.net.wifi.WifiManager;
 
 import android.os.Parcelable;
 import android.os.Parcel;
+import android.widget.Toast;
 
 
 public class CellInformation implements Parcelable {
@@ -39,16 +40,19 @@ public class CellInformation implements Parcelable {
 
     public CellInformation(Context context) {
         this.context = context;
+        initNetwork();
     }
 
     public static synchronized void setGlobalContext(Context newGlobalContext) {
         globalContext = newGlobalContext;
     }
 
-    public synchronized void initNetwork() {
+    private synchronized void initNetwork() {
         if (telephonyManager == null) {
             telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             telephonyManager.listen(new SignalStrengthChangeListener(), PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+
+            Toast.makeText(context.getApplicationContext(), "initNetwork", Toast.LENGTH_LONG).show();
         }
     }
 

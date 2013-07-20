@@ -102,10 +102,24 @@
             android:layout_gravity="left"
 						/>
 
-					<TextView
-						android:id="@+id/rssi"
+	<TextView
+            android:id="@+id/rssi"
             android:text="99"
             android:layout_gravity="left"
             />
+
+    <TextView
+            android:text="RSSI:"
+            android:layout_column="0"
+            android:layout_gravity="left"
+						/>
+
+    <Button
+        android:id="@+id/buttonrefresh"
+        android:text="Refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        />
 
 </GridLayout>

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 
 public class CellPerfActivity extends Activity {
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -35,6 +36,8 @@ public class CellPerfActivity extends Activity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] mCategories;
+
+    private Bundle mBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +84,11 @@ public class CellPerfActivity extends Activity {
         if (savedInstanceState == null) {
             selectItem(0);
         }
+
+        mBundle = new Bundle();
+        mBundle.putString("unique-id", Utils.getUniqueId(this));
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -270,6 +277,11 @@ public class CellPerfActivity extends Activity {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+    public Bundle getBundle() {
+        return mBundle;
     }
 
 }

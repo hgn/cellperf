@@ -23,13 +23,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.Button;
 import android.util.Log;
 import android.widget.TextView;
+import android.view.View.OnClickListener;
 
 public class CellInformationFragment extends Fragment {
 
     private final String TAG = getClass().getSimpleName();
     private CellInformation cellInformation = null;
+
+    private TextView rssiTextView;
 
 
     @Override
@@ -42,19 +46,28 @@ public class CellInformationFragment extends Fragment {
 
         if (savedInstanceState != null) {
             cellInformation = (CellInformation) savedInstanceState.getParcelable("cellInformation");
-            if (cellInformation != null) {
+            if (cellInformation == null) {
                 cellInformation = new CellInformation(this.getActivity());
             }
         } else {
             cellInformation = new CellInformation(this.getActivity());
         }
 
-        cellInformation.initNetwork();
         int rssi = cellInformation.getCurrentRssi();
 
-        TextView tv1 = (TextView) getActivity().findViewById(R.id.rssi);
-        tv1.setText(String.valueOf(rssi));
+        rssiTextView = (TextView) rootView.findViewById(R.id.rssi);
+        rssiTextView.setText(String.valueOf(rssi));
 
+        Button mButton = (Button) rootView.findViewById(R.id.buttonrefresh);
+        if (mButton != null) {
+            mButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int rssi = cellInformation.getCurrentRssi();
+                    rssiTextView.setText(String.valueOf(rssi));
+                }
+            });
+        }
 
         return rootView;
     }
