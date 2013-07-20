@@ -30,6 +30,8 @@ import android.view.View.OnClickListener;
 
 public class CellInformationFragment extends Fragment {
 
+    private View mView;
+
     private final String TAG = getClass().getSimpleName();
     private CellInformation cellInformation = null;
 
@@ -41,24 +43,24 @@ public class CellInformationFragment extends Fragment {
 
         Log.i(TAG, "onCreateView");
 
-        View rootView = inflater.inflate(R.layout.fragment_cell_information, container, false);
+        mView = inflater.inflate(R.layout.fragment_cell_information, container, false);
         getActivity().setTitle("Cell Information");
 
-        if (savedInstanceState != null) {
-            cellInformation = (CellInformation) savedInstanceState.getParcelable("cellInformation");
-            if (cellInformation == null) {
-                cellInformation = new CellInformation(this.getActivity());
-            }
-        } else {
-            cellInformation = new CellInformation(this.getActivity());
-        }
+        //if (savedInstanceState != null) {
+        //    cellInformation = (CellInformation) savedInstanceState.getParcelable("cellInformation");
+        //    if (cellInformation == null) {
+        //        cellInformation = new CellInformation(this.getActivity(), this);
+        //    }
+        //} else {
+            cellInformation = new CellInformation(this.getActivity(), this);
+        //}
 
         int rssi = cellInformation.getCurrentRssi();
 
-        rssiTextView = (TextView) rootView.findViewById(R.id.rssi);
+        rssiTextView = (TextView) mView.findViewById(R.id.rssi);
         rssiTextView.setText(String.valueOf(rssi));
 
-        Button mButton = (Button) rootView.findViewById(R.id.buttonrefresh);
+        Button mButton = (Button) mView.findViewById(R.id.buttonrefresh);
         if (mButton != null) {
             mButton.setOnClickListener(new OnClickListener() {
                 @Override
@@ -69,7 +71,7 @@ public class CellInformationFragment extends Fragment {
             });
         }
 
-        return rootView;
+        return mView;
     }
 
     @Override
@@ -88,16 +90,19 @@ public class CellInformationFragment extends Fragment {
 	public void onStart() {
 		super.onStart();	
 		Log.i(TAG, "onStart");
+        cellInformation.activate();
 	}
 	
 	public void onresume() {
 		super.onResume();
+
 		Log.i(TAG, "onResume");
+        cellInformation.activate();
 	}
 	
 	public void onPause() {
 		super.onPause();
-		Log.i(TAG, "onPause");
+        cellInformation.deactivate();
 	}
 	
 	public void onStop() {
@@ -134,4 +139,23 @@ public class CellInformationFragment extends Fragment {
 	public void onLowMemory() {
 		Log.i(TAG, "onLowMemory");
 	}
+
+
+    public void update(CellInformation cellInformation) {
+        int rssi;
+        TextView textView;
+        
+        rssi = cellInformation.getCurrentRssi();
+        textView = (TextView) mView.findViewById(R.id.rssi);
+        textView.setText(String.valueOf(rssi));
+
+        textView = (TextView) mView.findViewById(R.id.networktype);
+        textView.setText(cellInformation.getNetworkType());
+
+        textView = (TextView) mView.findViewById(R.id.simoperator);
+        textView.setText(cellInformation.getSimOperator());
+
+        textView = (TextView) mView.findViewById(R.id.simoperatorname);
+        textView.setText(cellInformation.getSimOperatorName());
+    }
 }

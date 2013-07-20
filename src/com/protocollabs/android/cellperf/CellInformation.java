@@ -1,5 +1,6 @@
 package  com.protocollabs.android.cellperf;
 
+
 import android.content.Context;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
@@ -25,42 +26,50 @@ import android.os.Parcel;
 import android.widget.Toast;
 
 
+
 public class CellInformation implements Parcelable {
+
+    private final String TAG = getClass().getSimpleName();
 
     public String measurementDate;
     public String coordinateLangitude;
     public String coordinateLongitude;
     public int dbm;
-    private int currentSignalStrength = NeighboringCellInfo.UNKNOWN_RSSI;
-    private TelephonyManager telephonyManager = null;
+
+    private int mRssi;
+    private String mNetworkType;
+    private String mSimOperator;
+    private String mSimOperatorName;
 
     private Context context;
-    private static Context globalContext = null;
+    private CellInformationProvider mCellInformationProvider;
+    private CellInformationFragment mCellInformationFragment;
 
 
-    public CellInformation(Context context) {
+    public CellInformation(Context context, CellInformationFragment cellInformationFragment) {
         this.context = context;
-        initNetwork();
+        mCellInformationFragment = cellInformationFragment;
+        mCellInformationProvider = new CellInformationProvider(context, this);
     }
 
-    public static synchronized void setGlobalContext(Context newGlobalContext) {
-        globalContext = newGlobalContext;
+
+    public void activate() {
+        Log.i(TAG, "activate");
+        mCellInformationProvider.activate();
     }
 
-    private synchronized void initNetwork() {
-        if (telephonyManager == null) {
-            telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            telephonyManager.listen(new SignalStrengthChangeListener(), PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
-            Toast.makeText(context.getApplicationContext(), "initNetwork", Toast.LENGTH_LONG).show();
-        }
+    public void deactivate() {
+        Log.i(TAG, "deactivate");
+        mCellInformationProvider.deactivate();
     }
-
+    
 
     @Override
     public int describeContents() {
         return 0;
     }
+
 
     public static final Parcelable.Creator<CellInformation> CREATOR = new Parcelable.Creator<CellInformation>() {
         public CellInformation createFromParcel(Parcel in) {
@@ -72,12 +81,14 @@ public class CellInformation implements Parcelable {
         }
     };
 
+
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(measurementDate);
         out.writeString(coordinateLangitude);
         out.writeString(coordinateLongitude);
         out.writeInt(dbm);
     }
+
 
     private CellInformation(Parcel in) {
         measurementDate = in.readString();
@@ -86,74 +97,43 @@ public class CellInformation implements Parcelable {
         dbm = in.readInt();
     }
 
-    private static final String[] NETWORK_TYPES = {
-        "UNKNOWN",  // 0  - NETWORK_TYPE_UNKNOWN
-        "GPRS",     // 1  - NETWORK_TYPE_GPRS
-        "EDGE",     // 2  - NETWORK_TYPE_EDGE
-        "UMTS",     // 3  - NETWORK_TYPE_UMTS
-        "CDMA",     // 4  - NETWORK_TYPE_CDMA
-        "EVDO_0",   // 5  - NETWORK_TYPE_EVDO_0
-        "EVDO_A",   // 6  - NETWORK_TYPE_EVDO_A
-        "1xRTT",    // 7  - NETWORK_TYPE_1xRTT
-        "HSDPA",    // 8  - NETWORK_TYPE_HSDPA
-        "HSUPA",    // 9  - NETWORK_TYPE_HSUPA
-        "HSPA",     // 10 - NETWORK_TYPE_HSPA
-        "IDEN",     // 11 - NETWORK_TYPE_IDEN
-        "EVDO_B",   // 12 - NETWORK_TYPE_EVDO_B
-        "LTE",      // 13 - NETWORK_TYPE_LTE
-        "EHRPD",    // 14 - NETWORK_TYPE_EHRPD
-    };
+    public void setSimOperator(String simOperator) {
+        mSimOperator = simOperator;
+    }
+
+    public String getSimOperator() {
+        return mSimOperator;
+    }
+
 
     public synchronized void setCurrentRssi(int rssi) {
-        currentSignalStrength = rssi;
+        mRssi = rssi;
     }
 
     public synchronized int getCurrentRssi() {
-        return currentSignalStrength;
+        return mRssi;
+    }
+
+    public synchronized void setNetworkType(String network) {
+        mNetworkType = network;
+    }
+
+    public synchronized String getNetworkType() {
+        return mNetworkType;
+    }
+
+    public synchronized void setSimOperatorName(String val) {
+        mSimOperatorName = val;
+    }
+
+    public synchronized String getSimOperatorName() {
+        return mSimOperatorName;
     }
 
 
-    public String getNetwork() {
-        initNetwork();
-        return getTelephonyNetworkType();
+
+    public void update() {
+        mCellInformationFragment.update(this);
     }
 
-    private String getTelephonyNetworkType() {
-        assert NETWORK_TYPES[14].compareTo("EHRPD") == 0;
-
-        int networkType = telephonyManager.getNetworkType();
-        if (networkType < NETWORK_TYPES.length) {
-            return NETWORK_TYPES[telephonyManager.getNetworkType()];
-        } else {
-            return "Unrecognized: " + networkType;
-        }
-    }
-
-    private String getTelephonyPhoneType() {
-        switch (telephonyManager.getPhoneType()) {
-            case TelephonyManager.PHONE_TYPE_CDMA:
-                return "CDMA";
-            case TelephonyManager.PHONE_TYPE_GSM:
-                return "GSM";
-            case TelephonyManager.PHONE_TYPE_NONE:
-                return "None";
-        }
-        return "Unknown";
-    }
-
-
-    private class SignalStrengthChangeListener extends PhoneStateListener {
-        @Override
-        public void onSignalStrengthsChanged(SignalStrength signalStrength) {
-            if (getNetwork().compareTo(NETWORK_TYPES[TelephonyManager.NETWORK_TYPE_CDMA]) == 0) {
-                setCurrentRssi(signalStrength.getCdmaDbm());
-            } else if (getNetwork().compareTo(NETWORK_TYPES[TelephonyManager.NETWORK_TYPE_EVDO_0]) == 0 ||
-                    getNetwork().compareTo(NETWORK_TYPES[TelephonyManager.NETWORK_TYPE_EVDO_A]) == 0 ||
-                    getNetwork().compareTo(NETWORK_TYPES[TelephonyManager.NETWORK_TYPE_EVDO_B]) == 0) {
-                setCurrentRssi(signalStrength.getEvdoDbm());
-            } else if (signalStrength.isGsm()) {
-                setCurrentRssi(signalStrength.getGsmSignalStrength());
-            }
-        }
-    }
 }

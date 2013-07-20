@@ -9,7 +9,7 @@
 	android:alignmentMode="alignBounds"
 	android:columnOrderPreserved="false"
 
-	android:columnCount="7"
+	android:columnCount="11"
 	android:layout_margin="20dp"
 	>
 
@@ -28,7 +28,7 @@
 		/>
 
 	<TextView
-		android:text="Ifff"
+		android:text="943"
 		android:layout_gravity="left"
 		/>
 
@@ -46,13 +46,14 @@
 
 
 	<TextView
-		android:text="Net Type:"
+		android:text="Network Type:"
 		android:layout_column="0"
 		android:layout_gravity="left"
 		/>
 
 	<TextView
-		android:text="HSDPA"
+		android:id="@+id/networktype"
+        android:text="unknown"
 		android:layout_gravity="left"
 		/>
 
@@ -101,6 +102,30 @@
 	<TextView
 		android:id="@+id/rssi"
 		android:text="99"
+		android:layout_gravity="left"
+		/>
+
+	<TextView
+		android:text="Sim Operator:"
+		android:layout_column="0"
+		android:layout_gravity="left"
+		/>
+
+	<TextView
+		android:id="@+id/simoperator"
+		android:text="unknown"
+		android:layout_gravity="left"
+		/>
+
+	<TextView
+		android:text="Sim Operator Name:"
+		android:layout_column="0"
+		android:layout_gravity="left"
+		/>
+
+	<TextView
+		android:id="@+id/simoperatorname"
+		android:text="unknown"
 		android:layout_gravity="left"
 		/>
 
