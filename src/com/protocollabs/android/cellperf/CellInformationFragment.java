@@ -150,12 +150,30 @@ public class CellInformationFragment extends Fragment {
         textView.setText(String.valueOf(rssi));
 
         textView = (TextView) mView.findViewById(R.id.networktype);
-        textView.setText(cellInformation.getNetworkType());
+        textView.setText(cellInformation.getTelephonyNetworkType());
 
         textView = (TextView) mView.findViewById(R.id.simoperator);
         textView.setText(cellInformation.getSimOperator());
 
         textView = (TextView) mView.findViewById(R.id.simoperatorname);
         textView.setText(cellInformation.getSimOperatorName());
+
+        textView = (TextView) mView.findViewById(R.id.network_operator_name);
+        textView.setText(cellInformation.getNetworkOperatorName());
+
+        textView = (TextView) mView.findViewById(R.id.network_operator);
+        textView.setText(cellInformation.getNetworkOperator());
+
+        textView = (TextView) mView.findViewById(R.id.network_country_iso);
+        textView.setText(cellInformation.getNetworkCountryIso());
+
+        textView = (TextView) mView.findViewById(R.id.device_id);
+        textView.setText(cellInformation.getDeviceId());
+
+        textView = (TextView) mView.findViewById(R.id.cid);
+        textView.setText(cellInformation.getCid());
+
+        textView = (TextView) mView.findViewById(R.id.lac);
+        textView.setText(cellInformation.getLac());
     }
 }

@@ -40,6 +40,13 @@ public class CellInformation implements Parcelable {
     private String mNetworkType;
     private String mSimOperator;
     private String mSimOperatorName;
+    private String mTelephonyNetworkType;
+    private String mNetworkOperatorName;
+    private String mNetworkOperator;
+    private String mNetworkCountryIso;
+    private String mDeviceId;
+    private String mCid;
+    private String mLac;
 
     private Context context;
     private CellInformationProvider mCellInformationProvider;
@@ -114,13 +121,16 @@ public class CellInformation implements Parcelable {
         return mRssi;
     }
 
-    public synchronized void setNetworkType(String network) {
-        mNetworkType = network;
+
+    public synchronized void setTelephonyNetworkType(String network) {
+        mTelephonyNetworkType = network;
     }
 
-    public synchronized String getNetworkType() {
-        return mNetworkType;
+
+    public synchronized String getTelephonyNetworkType() {
+        return mTelephonyNetworkType;
     }
+
 
     public synchronized void setSimOperatorName(String val) {
         mSimOperatorName = val;
@@ -129,6 +139,55 @@ public class CellInformation implements Parcelable {
     public synchronized String getSimOperatorName() {
         return mSimOperatorName;
     }
+
+    public synchronized void setNetworkOperatorName(String val) {
+        mNetworkOperatorName = val;
+    }
+
+    public synchronized String getNetworkOperatorName() {
+        return mNetworkOperatorName;
+    }
+
+    public synchronized void setNetworkOperator(String val) {
+        mNetworkOperator = val;
+    }
+
+    public synchronized String getNetworkOperator() {
+        return mNetworkOperator;
+    }
+
+    public synchronized void setNetworkCountryIso(String val) {
+        mNetworkCountryIso = val;
+    }
+
+    public synchronized String getNetworkCountryIso() {
+        return mNetworkCountryIso;
+    }
+
+    public synchronized void setDeviceId(String val) {
+        mDeviceId = val;
+    }
+
+    public synchronized String getDeviceId() {
+        return mDeviceId;
+    }
+
+    public synchronized void setCid(String val) {
+        mCid = val;
+    }
+
+    public synchronized String getCid() {
+        return mCid;
+    }
+
+    public synchronized void setLac(String val) {
+        mLac = val;
+    }
+
+    public synchronized String getLac() {
+        return mLac;
+    }
+
 
 
 

@@ -13,6 +13,7 @@ import android.telephony.NeighboringCellInfo;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -95,19 +96,34 @@ public class CellInformationProvider {
         "HSPA+",    // 15 - NETWORK_TYPE_HSPAP
     };
 
-    public synchronized void setNetworkType(String type) {
-        mCellInformation.setNetworkType(type);
-    }
 
     public synchronized void setCurrentRssi(int rssi) {
         mCellInformation.setCurrentRssi(rssi);
     }
 
-    private void update() {
-        setNetworkType(getNetwork());
 
+    private void cellInfo() {
+        //CellInfoGsm cellinfogsm = (CellInfoGsm)telephonyManager.getAllCellInfo().get(0);
+        //CellSignalStrengthGsm cellSignalStrengthGsm = cellinfogsm.getCellSignalStrength();
+        //cellSignalStrengthGsm.getDbm();
+    }
+
+
+    private void update() {
+        mCellInformation.setTelephonyNetworkType(getTelephonyNetworkType());
         mCellInformation.setSimOperator(telephonyManager.getSimOperator());
         mCellInformation.setSimOperatorName(telephonyManager.getSimOperatorName());
+
+        mCellInformation.setNetworkOperatorName(telephonyManager.getNetworkOperatorName());
+        mCellInformation.setNetworkOperator(telephonyManager.getNetworkOperator());
+        mCellInformation.setNetworkCountryIso(telephonyManager.getNetworkCountryIso());
+
+        mCellInformation.setDeviceId(telephonyManager.getDeviceId());
+
+        GsmCellLocation gsmCellLocation = (GsmCellLocation)telephonyManager.getCellLocation();
+        mCellInformation.setCid(String.valueOf(gsmCellLocation.getCid()));
+        mCellInformation.setLac(String.valueOf(gsmCellLocation.getLac()));
+
 
         mCellInformation.update();
     }
@@ -145,6 +161,9 @@ public class CellInformationProvider {
 
         @Override
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
+
+            super.onSignalStrengthsChanged(signalStrength);
+
             if (getNetwork().compareTo(NETWORK_TYPES[TelephonyManager.NETWORK_TYPE_CDMA]) == 0) {
                 setCurrentRssi(signalStrength.getCdmaDbm());
             } else if (getNetwork().compareTo(NETWORK_TYPES[TelephonyManager.NETWORK_TYPE_EVDO_0]) == 0 ||
@@ -152,7 +171,10 @@ public class CellInformationProvider {
                     getNetwork().compareTo(NETWORK_TYPES[TelephonyManager.NETWORK_TYPE_EVDO_B]) == 0) {
                 setCurrentRssi(signalStrength.getEvdoDbm());
             } else if (signalStrength.isGsm()) {
-                setCurrentRssi(signalStrength.getGsmSignalStrength());
+                if (signalStrength.getGsmSignalStrength() != 99)
+                    setCurrentRssi(signalStrength.getGsmSignalStrength() * 2 - 113);
+                else
+                    setCurrentRssi(signalStrength.getGsmSignalStrength());
             }
 
             update();

@@ -13,25 +13,19 @@
 	android:layout_margin="20dp"
 	>
 
-	<TextView
-		android:layout_columnSpan="2"
-		android:layout_gravity="center_horizontal"
-		android:text="Cell Information"
-		android:layout_column="0"
-		/>
 
 
 	<TextView
-		android:text="Cell:"
+		android:text="Operator Name:"
 		android:layout_column="0"
 		android:layout_gravity="left"
 		/>
 
 	<TextView
-		android:text="943"
+		android:id="@+id/network_operator_name"
+		android:text="unknown"
 		android:layout_gravity="left"
-		/>
-
+        />
 
 	<TextView
 		android:text="Operator:"
@@ -40,10 +34,22 @@
 		/>
 
 	<TextView
-		android:text="Vodafone.de"
+		android:id="@+id/network_operator"
+		android:text="unknown"
+		android:layout_gravity="left"
+        />
+
+	<TextView
+		android:text="Network Country ISO Code:"
+		android:layout_column="0"
 		android:layout_gravity="left"
 		/>
 
+	<TextView
+        android:id="@+id/network_country_iso"
+		android:text="unknown"
+		android:layout_gravity="left"
+		/>
 
 	<TextView
 		android:text="Network Type:"
@@ -59,42 +65,7 @@
 
 
 	<TextView
-		android:text="Neighboors:"
-		android:layout_column="0"
-		android:layout_gravity="left"
-		/>
-
-	<TextView
-		android:text="43934, 3499349, 439943"
-		android:layout_gravity="left"
-		/>
-
-
-	<TextView
-		android:text="MCC MNC:"
-		android:layout_column="0"
-		android:layout_gravity="left"
-		/>
-
-	<TextView
-		android:text="8249248"
-		android:layout_gravity="left"
-		/>
-
-
-	<TextView
-		android:text="Country:"
-		android:layout_column="0"
-		android:layout_gravity="left"
-		/>
-
-	<TextView
-		android:text="de"
-		android:layout_gravity="left"
-		/>
-
-	<TextView
-		android:text="RSSI:"
+		android:text="Signal strength (dbm):"
 		android:layout_column="0"
 		android:layout_gravity="left"
 		/>
@@ -127,10 +98,46 @@
 		android:id="@+id/simoperatorname"
 		android:text="unknown"
 		android:layout_gravity="left"
+        />
+
+	<TextView
+		android:text="Device ID:"
+		android:layout_column="0"
+		android:layout_gravity="left"
 		/>
 
 	<TextView
-		android:text="RSSI:"
+		android:id="@+id/device_id"
+		android:text="unknown"
+		android:layout_gravity="left"
+        />
+
+	<TextView
+		android:text="Cell ID:"
+		android:layout_column="0"
+		android:layout_gravity="left"
+		/>
+
+	<TextView
+		android:id="@+id/cid"
+		android:text="unknown"
+		android:layout_gravity="left"
+        />
+	<TextView
+		android:text="Location area code (LAC):"
+		android:layout_column="0"
+		android:layout_gravity="left"
+		/>
+
+	<TextView
+		android:id="@+id/lac"
+		android:text="unknown"
+		android:layout_gravity="left"
+        />
+
+
+	<TextView
+		android:text=""
 		android:layout_column="0"
 		android:layout_gravity="left"
 		/>
