@@ -121,8 +121,10 @@ public class CellInformationProvider {
         mCellInformation.setDeviceId(telephonyManager.getDeviceId());
 
         GsmCellLocation gsmCellLocation = (GsmCellLocation)telephonyManager.getCellLocation();
-        mCellInformation.setCid(String.valueOf(gsmCellLocation.getCid()));
-        mCellInformation.setLac(String.valueOf(gsmCellLocation.getLac()));
+        if (gsmCellLocation != null) {
+            mCellInformation.setCid(String.valueOf(gsmCellLocation.getCid()));
+            mCellInformation.setLac(String.valueOf(gsmCellLocation.getLac()));
+        }
 
 
         mCellInformation.update();

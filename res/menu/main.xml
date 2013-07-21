@@ -3,10 +3,6 @@
           android:icon="@drawable/action_search"
           android:title="@string/action_websearch"
           android:showAsAction="ifRoom|withText" />
-    <item android:id="@+id/action_homepage"
-          android:icon="@drawable/action_search"
-          android:title="@string/action_websearch"
-          android:showAsAction="ifRoom|withText" />
     <item android:id="@+id/action_settings"
           android:title="@string/action_bar_settings"
           android:showAsAction="withText" />

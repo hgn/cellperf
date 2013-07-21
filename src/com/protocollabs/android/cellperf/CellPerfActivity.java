@@ -136,10 +136,10 @@ public class CellPerfActivity extends Activity {
                     Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
                 }
                 return true;
-            case R.id.action_homepage:
-                Toast.makeText(this, "homepage", Toast.LENGTH_LONG).show();
-                return true;
             case R.id.action_settings:
+                // FIXME: this fragment must be stacked on top
+                // of the current active fragment to let the back
+                // button work      -HGN
                 fragment = fm.findFragmentByTag("SettingsFragment");
                 if (fragment == null) {
                     fragment = new SettingsFragment();
