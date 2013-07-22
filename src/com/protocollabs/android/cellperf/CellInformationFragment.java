@@ -36,6 +36,7 @@ public class CellInformationFragment extends Fragment {
     private CellInformation cellInformation = null;
 
     private TextView rssiTextView;
+    private Speech mSpeech;
 
 
     @Override
@@ -73,6 +74,8 @@ public class CellInformationFragment extends Fragment {
         }
         */
 
+        mSpeech = new Speech(this.getActivity());
+
         return mView;
     }
 
@@ -100,11 +103,13 @@ public class CellInformationFragment extends Fragment {
 
 		Log.i(TAG, "onResume");
         cellInformation.activate();
+        mSpeech = new Speech(this.getActivity());
 	}
 	
 	public void onPause() {
 		super.onPause();
         cellInformation.deactivate();
+        mSpeech.shutdown();
 	}
 	
 	public void onStop() {
@@ -177,5 +182,8 @@ public class CellInformationFragment extends Fragment {
 
         textView = (TextView) mView.findViewById(R.id.lac);
         textView.setText(cellInformation.getLac());
+
+        if (mSpeech != null)
+            mSpeech.speak("New signal strength " + cellInformation.getCurrentRssi() + "decibel");
     }
 }
