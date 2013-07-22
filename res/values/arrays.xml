@@ -4,9 +4,14 @@
     
     <!-- Used in app/menu examples -->
     <string-array name="entries_list_preference">
-        <item>Alpha Option 01</item>
-        <item>Beta Option 02</item>
-        <item>Charlie Option 03</item>  
+        <item>Automatic</item>
+				<item>2 minutes</item>
+				<item>5 minutes</item>
+				<item>10 minutes</item>
+				<item>30 minutes</item>
+				<item>1 hour</item>
+				<item>2 hour</item>
+				<item>5 hour</item>
     </string-array>
 
     <!-- Used in app/menu examples -->

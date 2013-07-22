@@ -60,6 +60,7 @@ public class CellInformationFragment extends Fragment {
         rssiTextView = (TextView) mView.findViewById(R.id.rssi);
         rssiTextView.setText(String.valueOf(rssi));
 
+        /*
         Button mButton = (Button) mView.findViewById(R.id.buttonrefresh);
         if (mButton != null) {
             mButton.setOnClickListener(new OnClickListener() {
@@ -70,6 +71,7 @@ public class CellInformationFragment extends Fragment {
                 }
             });
         }
+        */
 
         return mView;
     }

@@ -92,12 +92,13 @@ public class CellPerfActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
-    /* Called whenever we call invalidateOptionsMenu() */
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
@@ -152,6 +153,7 @@ public class CellPerfActivity extends Activity {
                     ft.replace(R.id.content_frame, fragment);
                     ft.commit();
                 }
+                setTitle("Settings");
 
                 return true;
 
