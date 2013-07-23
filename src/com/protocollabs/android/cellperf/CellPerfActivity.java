@@ -10,9 +10,13 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
+
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.content.LocalBroadcastManager;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +28,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 
 
 
@@ -39,8 +51,17 @@ public class CellPerfActivity extends Activity {
 
     private Bundle mBundle;
 
+    /* Service and Broadcast specific */
+    private MeasurementsService mMeasurmentsExecuter;
+    private DataUpdateReceiver dataUpdateReceiver;
+
+    private final String TAG = getClass().getSimpleName();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -51,6 +72,7 @@ public class CellPerfActivity extends Activity {
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mCategories));
@@ -92,7 +114,10 @@ public class CellPerfActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i(TAG, "onCreateOptionsMenu");
+
         super.onCreateOptionsMenu(menu);
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         return true;
@@ -101,7 +126,8 @@ public class CellPerfActivity extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
+        Log.i(TAG, "onPrepareOptionsMenu");
+
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
@@ -262,28 +288,78 @@ public class CellPerfActivity extends Activity {
     }
 
 
-    /**
-     * When using the ActionBarDrawerToggle, you must call it during
-     * onPostCreate() and onConfigurationChanged()...
-     */
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onPostCreate");
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
 
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        Log.i(TAG, "onConfigurationChanged");
         super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "onResume");
+        super.onResume();
+
+        if (dataUpdateReceiver == null)
+            dataUpdateReceiver = new DataUpdateReceiver();
+        IntentFilter intentFilter = new IntentFilter("measurement-data-ready");
+        registerReceiver(dataUpdateReceiver, intentFilter);
+
+        bindService(new Intent(this, MeasurementsService.class), mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+
+
+    @Override
+    protected void onPause() {
+        Log.i(TAG, "onPause");
+        super.onPause();
+        if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver);
+        unbindService(mConnection);
     }
 
 
     public Bundle getBundle() {
         return mBundle;
+    }
+
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            MeasurementsService.MeasurementsBinder localBinder = (MeasurementsService.MeasurementsBinder) binder;
+            mMeasurmentsExecuter = localBinder.getService();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            mMeasurmentsExecuter = null;
+        }
+    };
+
+    public void showData() {
+        Log.i(TAG, "showData");
+        if (mMeasurmentsExecuter != null) {
+            mMeasurmentsExecuter.getMeasurementsResults();
+        }
+    }
+
+
+    private class DataUpdateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("ping-measurement");
+            Log.d("receiver", "Got message: " + message);
+        }
+
     }
 
 }
