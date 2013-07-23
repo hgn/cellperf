@@ -109,6 +109,10 @@ public class CellPerfActivity extends Activity {
 
         mBundle = new Bundle();
         mBundle.putString("unique-id", Utils.getUniqueId(this));
+
+        Intent intent = new Intent(this, MeasurementsService.class);
+        startService(intent);
+
     }
 
 
@@ -354,10 +358,12 @@ public class CellPerfActivity extends Activity {
 
 
     private class DataUpdateReceiver extends BroadcastReceiver {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("ping-measurement");
-            Log.d("receiver", "Got message: " + message);
+            Log.i("receiver", "Got message: " + message);
+            Toast.makeText(context, "Got broadcast message", Toast.LENGTH_SHORT).show();
         }
 
     }
