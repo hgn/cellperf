@@ -55,6 +55,8 @@ public class CellPerfActivity extends Activity {
     private MeasurementsService mMeasurmentsExecuter;
     private DataUpdateReceiver dataUpdateReceiver;
 
+    private boolean mMeasurementsActivated = false;
+
     private final String TAG = getClass().getSimpleName();
 
 
@@ -124,6 +126,12 @@ public class CellPerfActivity extends Activity {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
+
+        if (mMeasurementsActivated)
+            menu.getItem(0).setIcon(R.drawable.btn_toggle_on);
+        else
+            menu.getItem(0).setIcon(R.drawable.btn_toggle_off);
+
         return true;
     }
 
@@ -132,8 +140,10 @@ public class CellPerfActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         Log.i(TAG, "onPrepareOptionsMenu");
 
+        // disable measurements toogle if drawer is open
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        menu.findItem(R.id.measurments_toggle).setVisible(!drawerOpen);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -156,17 +166,18 @@ public class CellPerfActivity extends Activity {
 
 
         switch(item.getItemId()) {
-            case R.id.action_websearch:
-                // create intent to perform web search for this planet
-                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                intent.putExtra(SearchManager.QUERY, getActionBar().getTitle());
-                // catch event that there's no activity to handle intent
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
+            case R.id.measurments_toggle:
+                if (mMeasurementsActivated) {
+                    item.setIcon(R.drawable.btn_toggle_off);
+                    mMeasurementsActivated = false;
+                    Log.i(TAG, "measurements active toggle: off");
                 } else {
-                    Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
+                    item.setIcon(R.drawable.btn_toggle_on);
+                    mMeasurementsActivated = true;
+                    Log.i(TAG, "measurements active toggle: on");
                 }
                 return true;
+
             case R.id.action_settings:
                 // FIXME: this fragment must be stacked on top
                 // of the current active fragment to let the back

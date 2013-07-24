@@ -38,6 +38,8 @@ public class CellInformationFragment extends Fragment {
     private CellInformation cellInformation = null;
 
     private TextView rssiTextView;
+
+    private boolean mSpeechActivated;
     private Speech mSpeech;
 
 
@@ -77,10 +79,10 @@ public class CellInformationFragment extends Fragment {
         */
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-        boolean settings_play_sound = prefs.getBoolean("misc_cell_voice_information", false);
+        mSpeechActivated = prefs.getBoolean("misc_cell_voice_information", false);
 
 
-        if (settings_play_sound == true) {
+        if (mSpeechActivated == true) {
             mSpeech = new Speech(this.getActivity());
         }
 
@@ -111,13 +113,17 @@ public class CellInformationFragment extends Fragment {
 
 		Log.i(TAG, "onResume");
         cellInformation.activate();
-        mSpeech = new Speech(this.getActivity());
+        if (mSpeechActivated == true) {
+            mSpeech = new Speech(this.getActivity());
+        }
 	}
 	
 	public void onPause() {
 		super.onPause();
         cellInformation.deactivate();
-        mSpeech.shutdown();
+        if (mSpeechActivated == true) {
+            mSpeech.shutdown();
+        }
 	}
 	
 	public void onStop() {

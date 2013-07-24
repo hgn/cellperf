@@ -1,9 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_websearch"
-          android:icon="@drawable/action_search"
-          android:title="@string/action_websearch"
-          android:showAsAction="ifRoom|withText" />
-    <item android:id="@+id/action_settings"
-          android:title="@string/action_bar_settings"
-          android:showAsAction="withText" />
+
+	<item android:id="@+id/measurments_toggle"
+		android:icon="@drawable/btn_toggle_off"
+		android:title="Measurment"
+		android:showAsAction="ifRoom|withText"
+		/>
+
+	<item android:id="@+id/action_settings"
+		android:title="@string/action_bar_settings"
+		android:showAsAction="withText"
+		/>
+
 </menu>
