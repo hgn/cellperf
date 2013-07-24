@@ -30,7 +30,18 @@
                 android:entryValues="@array/entryvalues_list_preference"
                 android:dialogTitle="Measurement Interval" />
 
-    </PreferenceCategory>
+        </PreferenceCategory>
+
+        <PreferenceCategory
+            android:title="Miscellaneous">
+
+            <CheckBoxPreference
+                android:key="misc_cell_voice_information"
+                android:title="Voice Cell Handover Notification"
+                android:summary="Audio notification if Cell ID change (handover)"
+                android:defaultValue="false"
+                />
+        </PreferenceCategory>
 
 </PreferenceScreen>
 

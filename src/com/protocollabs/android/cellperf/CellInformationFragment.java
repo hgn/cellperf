@@ -27,6 +27,8 @@ import android.widget.Button;
 import android.util.Log;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
 
 public class CellInformationFragment extends Fragment {
 
@@ -74,7 +76,13 @@ public class CellInformationFragment extends Fragment {
         }
         */
 
-        mSpeech = new Speech(this.getActivity());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        boolean settings_play_sound = prefs.getBoolean("misc_cell_voice_information", false);
+
+
+        if (settings_play_sound == true) {
+            mSpeech = new Speech(this.getActivity());
+        }
 
         return mView;
     }
