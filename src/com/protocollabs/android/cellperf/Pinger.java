@@ -20,7 +20,7 @@ public class Pinger {
             int i;
             char[] buffer = new char[4096];
 
-            Process process = Runtime.getRuntime().exec( "/system/bin/ping -c 8 " + url);
+            Process process = Runtime.getRuntime().exec( "/system/bin/ping -c 3 " + url);
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                         process.getInputStream()));
             StringBuffer output = new StringBuffer();

@@ -1,16 +1,23 @@
 package com.protocollabs.android.cellperf;
 
-import java.util.Locale;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.SearchManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Bundle;
-import android.util.Log;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -23,19 +30,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
+
 import android.os.Bundle;
 import android.os.IBinder;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.IntentFilter;
+
+import android.util.Log;
+
+import java.util.Locale;
 
 
 
@@ -54,17 +61,21 @@ public class CellPerfActivity extends Activity {
     /* Service and Broadcast specific */
     private MeasurementsService mMeasurmentsExecuter;
     private DataUpdateReceiver dataUpdateReceiver;
+    private boolean mBound = false;
 
     private boolean mMeasurementsActivated = false;
 
     private final String TAG = getClass().getSimpleName();
 
+    private SharedPreferences mPrefs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         Log.i(TAG, "onCreate");
 
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mTitle = mDrawerTitle = getTitle();
@@ -107,14 +118,17 @@ public class CellPerfActivity extends Activity {
 
         if (savedInstanceState == null) {
             selectItem(0);
-        }
+        } 
 
         mBundle = new Bundle();
         mBundle.putString("unique-id", Utils.getUniqueId(this));
 
-        Intent intent = new Intent(this, MeasurementsService.class);
-        startService(intent);
+        //Intent intent = new Intent(this, MeasurementsService.class);
+        //startService(intent);
 
+        mPrefs = getPreferences(Context.MODE_PRIVATE);;
+        mMeasurementsActivated = mPrefs.getBoolean("mMeasurementsActivated", false);
+        Log.i(TAG, "get prferencees: mMeasurementsActivated was: " + mMeasurementsActivated);
     }
 
 
@@ -127,10 +141,13 @@ public class CellPerfActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
-        if (mMeasurementsActivated)
+        if (mMeasurementsActivated) {
+            Log.i(TAG, "measurement was activated - display active button");
             menu.getItem(0).setIcon(R.drawable.btn_toggle_on);
-        else
+        } else {
+            Log.i(TAG, "measurement was deactivated - display in-active button");
             menu.getItem(0).setIcon(R.drawable.btn_toggle_off);
+        }
 
         return true;
     }
@@ -145,6 +162,49 @@ public class CellPerfActivity extends Activity {
         menu.findItem(R.id.measurments_toggle).setVisible(!drawerOpen);
 
         return super.onPrepareOptionsMenu(menu);
+    }
+
+
+    private void measurementActivate() {
+        Log.i(TAG, "measurements activated");
+
+        Intent intent = new Intent(this, CellPerfActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Notification noti = new Notification.Builder(this)
+            .setContentTitle("Cellperf Measurements Activated")
+            .setContentText("Take measurements ...")
+            .setSmallIcon(R.drawable.ic_drawer)
+            .setContentIntent(pIntent)
+            .setOngoing(true)
+            .addAction(R.drawable.ic_drawer, "And more", pIntent).build();
+
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(0, noti);
+
+        bindService(new Intent(this, MeasurementsService.class), mConnection, Context.BIND_AUTO_CREATE);
+
+        Intent iintent = new Intent(this, MeasurementsService.class);
+        startService(iintent);
+
+        mMeasurementsActivated = true;
+    }
+
+
+    private void measurementDeactivate() {
+        Log.i(TAG, "measurements deactivated");
+
+        stopService(new Intent(this, MeasurementsService.class));
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.cancel(0);
+
+        mMeasurementsActivated = false;
     }
 
 
@@ -169,12 +229,11 @@ public class CellPerfActivity extends Activity {
             case R.id.measurments_toggle:
                 if (mMeasurementsActivated) {
                     item.setIcon(R.drawable.btn_toggle_off);
-                    mMeasurementsActivated = false;
-                    Log.i(TAG, "measurements active toggle: off");
+                    measurementDeactivate();
                 } else {
                     item.setIcon(R.drawable.btn_toggle_on);
-                    mMeasurementsActivated = true;
-                    Log.i(TAG, "measurements active toggle: on");
+                    measurementActivate();
+
                 }
                 return true;
 
@@ -211,6 +270,7 @@ public class CellPerfActivity extends Activity {
             selectItem(position);
         }
     }
+
 
     private void selectItem(int position) {
 
@@ -328,18 +388,31 @@ public class CellPerfActivity extends Activity {
             dataUpdateReceiver = new DataUpdateReceiver();
         IntentFilter intentFilter = new IntentFilter("measurement-data-ready");
         registerReceiver(dataUpdateReceiver, intentFilter);
-
-        bindService(new Intent(this, MeasurementsService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
 
 
     @Override
     protected void onPause() {
-        Log.i(TAG, "onPause");
         super.onPause();
-        if (dataUpdateReceiver != null) unregisterReceiver(dataUpdateReceiver);
-        unbindService(mConnection);
+
+        Log.i(TAG, "onPause");
+
+        if (dataUpdateReceiver != null)
+            unregisterReceiver(dataUpdateReceiver);
+
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+
+        if (mPrefs == null) {
+            mPrefs = getPreferences(Context.MODE_PRIVATE);
+        }
+
+        SharedPreferences.Editor ed = mPrefs.edit();
+        ed.putBoolean("mMeasurementsActivated", mMeasurementsActivated);
+        ed.commit();
     }
 
 
@@ -353,15 +426,19 @@ public class CellPerfActivity extends Activity {
         public void onServiceConnected(ComponentName className, IBinder binder) {
             MeasurementsService.MeasurementsBinder localBinder = (MeasurementsService.MeasurementsBinder) binder;
             mMeasurmentsExecuter = localBinder.getService();
+            mBound = true;
         }
 
         public void onServiceDisconnected(ComponentName className) {
             mMeasurmentsExecuter = null;
+            mBound = true;
         }
     };
 
     public void showData() {
+
         Log.i(TAG, "showData");
+
         if (mMeasurmentsExecuter != null) {
             mMeasurmentsExecuter.getMeasurementsResults();
         }
@@ -373,10 +450,10 @@ public class CellPerfActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("ping-measurement");
-            Log.i("receiver", "Got message: " + message);
-            Toast.makeText(context, "Got broadcast message", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Got broadcast message\n" + message, Toast.LENGTH_SHORT).show();
         }
 
     }
+
 
 }

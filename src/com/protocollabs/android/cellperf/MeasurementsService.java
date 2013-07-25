@@ -36,42 +36,38 @@ public class MeasurementsService extends Service {
     private final String TAG = getClass().getSimpleName();
 
 
-    Thread thread = new Thread() {
+    Thread mThread = new Thread() {
+
+        volatile boolean mShouldStop = false;
+
         @Override
         public void run() {
             try {
-                while(true) {
-                    sleep(10000);
-                    measurementsReady();
+
+                while (!mShouldStop) {
+                    sleep(60 * 1000);
+                    
+                    String data = Pinger.ping("heise.de");
+                    measurementsReady(data);
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.v(TAG ,"Thread interrupted..." );
             }
         }
+
     };
-
-
-
 
 
     @Override
     public void onCreate() {
-
+        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        mThread.start();
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
-
-
-        thread.start();
-
-
-        // For each start request, send a message to start a job and deliver the
-
-        // If we get killed, after returning from here, restart
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
 
@@ -92,18 +88,19 @@ public class MeasurementsService extends Service {
         return "results";
     }
 
-    private void measurementsReady() {
+
+    private void measurementsReady(String data) {
         Log.i(TAG, "measurementsReady");
         Intent intent = new Intent("measurement-data-ready");
-        intent.putExtra("ping-measurement", "ready");
+        intent.putExtra("ping-measurement", data);
         sendBroadcast(intent);
     }
+
 
     @Override
     public void onDestroy() {
         Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
-        // to shut up the thread call
-        // mHandlerThread.quit();
+        mThread.interrupt();
     }
 
     // TO BE IMPLEMENTED
