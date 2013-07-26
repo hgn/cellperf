@@ -60,7 +60,7 @@ public class MeasurementsService extends Service {
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Measurements activated", Toast.LENGTH_SHORT).show();
         mThread.start();
     }
 
@@ -99,14 +99,7 @@ public class MeasurementsService extends Service {
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Measurements deactivated", Toast.LENGTH_SHORT).show();
         mThread.interrupt();
     }
-
-    // TO BE IMPLEMENTED
-    //
-    // onCreate()
-    // implementieren und den measurement thread spawnen
-    // onDestroy()
-    // implementieren um darin gestartete threads zu beednden
 }
